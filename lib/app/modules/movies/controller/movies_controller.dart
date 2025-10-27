@@ -1,9 +1,18 @@
 import 'package:get/get.dart';
+import 'package:summerclass/app/routes/app_routes.dart';
 
 class MoviesController extends GetxController {
   MoviesController();
 
-  final _obj = ''.obs;
-  set obj(value) => this._obj.value = value;
-  get obj => this._obj.value;
+  void addNewMovie() {
+    Get.toNamed(Routes.MOVIE_FORM);
+  }
+
+  final Map<String, String> movieForm = {
+    'title': '',
+    'description': '',
+    'directors': '',
+    'synopsis': '',
+    'image': '',
+  };
 }
