@@ -18,7 +18,7 @@ abstract class AppPages {
     GetPage(
       name: Routes.HOME,
       page: () => HomePage(),
-      binding: HomePageBinding(),
+      bindings: [HomePageBinding(), MoviesBindings()],
     ),
 
     GetPage(

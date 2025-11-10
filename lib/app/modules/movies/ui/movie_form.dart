@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:summerclass/app/modules/movies/controller/movies_controller.dart';
 
 class MovieForm extends GetView<MoviesController> {
@@ -63,11 +66,65 @@ class MovieForm extends GetView<MoviesController> {
                 ),
                 SizedBox(height: 12),
 
+                ValueListenableBuilder<XFile?>(
+                  valueListenable: controller.imageNotifier,
+                  builder: (context, file, _) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Imagem (opcional)',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: controller.pickImage,
+                          child: Container(
+                            height: 160,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Center(
+                              child: file == null
+                                  ? Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.photo_library,
+                                          size: 40,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          'Toque para escolher uma imagem da galeria',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    )
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: Image.file(
+                                        File(file.path),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
                 ElevatedButton(
                   onPressed: () {
                     final formState = _formKey.currentState;
                     if (formState != null && formState.validate()) {
                       formState.save();
+                      controller.imageNotifier.value = null;
                       print(controller.movieForm);
                       Get.back();
                       Get.snackbar(
