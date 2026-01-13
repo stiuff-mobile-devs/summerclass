@@ -6,6 +6,7 @@ import 'package:summerclass/app/routes/app_routes.dart';
 import 'package:summerclass/firebase_options.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     GetMaterialApp(initialRoute: Routes.SPLASH, getPages: AppPages.routes),
