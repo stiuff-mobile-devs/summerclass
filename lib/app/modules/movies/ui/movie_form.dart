@@ -120,23 +120,45 @@ class MovieForm extends GetView<MoviesController> {
                   },
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final formState = _formKey.currentState;
-                    if (formState != null && formState.validate()) {
-                      formState.save();
-                      controller.imageNotifier.value = null;
-                      print(controller.movieForm);
-                      Get.back();
-                      Get.snackbar(
-                        'Sucesso',
-                        'Filme adicionado',
-                        snackPosition: SnackPosition.BOTTOM,
+                    
+                    if (formState == null || !formState.validate()) {
+                      Get.showSnackbar(
+                        GetSnackBar(
+                          title: 'Erro',
+                          message: 'Preencha os campos obrigatórios',
+                          duration: Duration(seconds: 2),
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                        ),
                       );
-                    } else {
-                      Get.snackbar(
-                        'Erro',
-                        'Preencha os campos obrigatórios',
-                        snackPosition: SnackPosition.BOTTOM,
+                      return;
+                    }
+                    
+                    formState.save();
+                    try {
+                      await controller.saveMovie();
+                      controller.imageNotifier.value = null;
+                      formState.reset();
+                      Get.showSnackbar(
+                        GetSnackBar(
+                          title: 'Sucesso',
+                          message: 'Filme adicionado com sucesso!',
+                          duration: Duration(seconds: 3),
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } catch (e) {
+                      Get.showSnackbar(
+                        GetSnackBar(
+                          title: 'Erro',
+                          message: e.toString().replaceFirst('Exception: ', ''),
+                          duration: Duration(seconds: 3),
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                        ),
                       );
                     }
                   },
